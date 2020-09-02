@@ -6,7 +6,7 @@ metadata:
   labels:
     k8s-app: falco
   name: falco
-  namespace: team-security
+  namespace: some-namespace
 spec:
   selector:
     matchLabels:
@@ -32,7 +32,7 @@ spec:
           value: "endpoint6.collection.us2.sumologic.com"
         - name: SUMOLOGIC_SOURCE_ENDPOINT
         # Sumologic gke-e2e receiver http collector endpoint
-          value: "/receiver/v1/http/ZaVnC4dhaV1njFXfacCerMOe6hIvxj0kMo-ureXol39ZTgEZXqnj18pw-tNUOmIc19g6vSWx6-2P6MrkWxQ8t3xPKGJ_pJ0U4S-yXSfiu12catU68FGsmA=="
+          value: "/receiver/v1/http/<your key>"
         - name: LOGFILE_PATH
           value: "/var/log/falco.log"
         image: gjyoung1974/falcods:latest

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: diuexploit
-  namespace: team-security
+  namespace: some-namespace
 spec:
   selector:
     matchLabels:

@@ -2,7 +2,7 @@ apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: falco-ds-pod-security-policy
-  namespace: team-security
+  namespace: some-namespace
 spec:
 # TODO what caps are needed?
   allowedCapabilities:
