@@ -9,9 +9,6 @@
 //TODO Add an internet network egress policy that only allows the falco daemon to dowload it's eBPF stuff
 // connect to sumologic, get PKI stuff, etc
 
-#### What alerts does it produce?     
-[Alerts](https://docs.google.com/spreadsheets/d/1u0X_YQidMaSfy3R0tvJysYKtVROtwQlgQfv7yLZl-2c/edit#gid=722477837)    
-
 [Open source falco homepage](https://falco.org)     
 [Falco GitHub project](https://github.com/falcosecurity/falco)    
 
