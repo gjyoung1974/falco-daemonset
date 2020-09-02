@@ -1,0 +1,42 @@
+{
+    "type": "SavedSearchWithScheduleSyncDefinition",
+    "name": "Mkdir binary dirs.",
+    "search": {
+        "queryText": "_source=\"prod/k8s/gke/falco/rules\" and _collector=\"prod/k8s/gke\"\n| json field=_raw \"log\" as log\n| json field=log \"rule\"\n| json field=log \"$['output_fields']['fd.name']\" as _output_fields_fd_name\n| json field=log \"$['output_fields']['proc.cmdline']\" as _output_fields_proc_cmdline\n| where rule = \"Mkdir binary dirs\"\n| count by rule\n",
+        "defaultTimeRange": "-15m",
+        "byReceiptTime": false,
+        "viewName": "",
+        "viewStartTime": "1970-01-01T00:00:00Z",
+        "queryParameters": [],
+        "parsingMode": "Manual"
+    },
+    "searchSchedule": {
+        "cronExpression": "0 0/15 * * * ? *",
+        "displayableTimeRange": "-15m",
+        "parseableTimeRange": {
+            "type": "BeginBoundedTimeRange",
+            "from": {
+                "type": "RelativeTimeRangeBoundary",
+                "relativeTime": "-15m"
+            },
+            "to": null
+        },
+        "timeZone": "America/Los_Angeles",
+        "threshold": {
+            "thresholdType": "group",
+            "operator": "gt",
+            "count": 0
+        },
+        "notification": {
+            "taskType": "WebhookSearchNotificationSyncDefinition",
+            "webhookId": "000000000001980C",
+            "payload": "{\r\n  \"attachments\": [\r\n    {\r\n      \"pretext\": \":siren::kubernetes: *{{SearchName}}* :kubernetes::siren:\",\r\n      \"fields\": [\r\n        {\r\n          \"title\": \"Description\",\r\n          \"value\": \"{{SearchDescription}}\"\r\n        },\r\n        {\r\n          \"title\": \"Time Range\",\r\n          \"value\": \"{{TimeRange}}\"\r\n        },\r\n        {\r\n          \"title\": \"GKE Container Event: Hit count\",\r\n          \"value\": \"{{Results._count}} : {{Results.rule}} \"\r\n        },\r\n        {\r\n          \"title\": \"Dashboard\",\r\n          \"value\": \"https:\/\/service.us2.sumologic.com\/ui\/#\/dashboardv2\/nJV3AUqLT74ketqNgc78q459vyZzVHN7kMRM83cVPmvkT4XwLWHnaEJNfFIP\"\r\n        },\r\n        {\r\n          \"title\": \"Response playbook:\",\r\n\"value\": \"https:\/\/drive.google.com\/drive\/folders\/1txvf2XMprNK8PobNlpNOxQj2rw57vLif\"\r\n        }\r\n      ],\r\n      \"mrkdwn_in\": [\r\n        \"text\",\r\n        \"pretext\"\r\n      ],\r\n      \"color\": \"#29A1E6\"\r\n    }\r\n  ]\r\n}",
+            "itemizeAlerts": false,
+            "maxItemizedAlerts": 50
+        },
+        "scheduleType": "15Minutes",
+        "muteErrorEmails": true,
+        "parameters": []
+    },
+    "description": "GKE Container Security Event"
+}

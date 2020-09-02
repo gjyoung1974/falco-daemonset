@@ -1,0 +1,119 @@
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: falco-ds-pod-security-policy
+  namespace: team-security
+spec:
+  privileged: true
+  # Required to prevent escalations to root.
+  allowPrivilegeEscalation: trie
+  # This is redundant with non-root + disallow privilege escalation,
+  # but we can provide it for defense in depth.
+  # requiredDropCapabilities:
+  #   - ALL
+  allowedCapabilities:
+  - NET_ADMIN
+  - SYS_PTRACE
+  # Allow core volume types.
+  # volumes:
+  #   - 'configMap'
+  #   - 'emptyDir'
+  #   - 'projected'
+  #   - 'secret'
+  #   - 'downwardAPI'
+  #   # Assume that persistentVolumes set up by the cluster admin are safe to use.
+  #   - 'persistentVolumeClaim'
+  volumes:
+  - emptyDir
+  - persistentVolumeClaim
+  - projected
+  - secret
+  - hostPath
+  - configMap
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  runAsUser:
+    # Require the container to run without root privileges.
+    rule: 'MustRunAsNonRoot'
+  seLinux:
+    # This policy assumes the nodes are using AppArmor rather than SELinux.
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'MustRunAs'
+    ranges:
+      # Forbid adding the root group.
+      - min: 1
+        max: 65535
+  fsGroup:
+    rule: 'MustRunAs'
+    ranges:
+      # Forbid adding the root group.
+      - min: 1
+        max: 65535
+  readOnlyRootFilesystem: false
+  allowedHostPaths:
+  - pathPrefix: /var/run/calico
+    readOnly: true
+  - pathPrefix: /var/lib/docker
+    readOnly: true
+  - pathPrefix: /mnt/disks
+    readOnly: true
+  - pathPrefix: /var/lib/log-tailer
+    readOnly: true
+  - pathPrefix: /proc
+    readOnly: true
+  - pathPrefix: /usr
+    readOnly: true
+  - pathPrefix: /var/lib/kubelet/pki/
+    readOnly: true
+  - pathPrefix: /var/run/
+    readOnly: true
+  - pathPrefix: /sys/fs/cgroup
+    readOnly: true
+  - pathPrefix: /dev
+    readOnly: true
+  - pathPrefix: /var/run
+    readOnly: true
+  - pathPrefix: /dev/disk
+    readOnly: true
+  - pathPrefix: /boot
+    readOnly: true
+  - pathPrefix: /usr/share/ca-certificates
+    readOnly: true
+  - pathPrefix: /etc/cni/net.d
+    readOnly: true
+  - pathPrefix: /lib/modules
+    readOnly: true
+  - pathPrefix: /var/lib/kubelet/device-plugins
+    readOnly: true
+  - pathPrefix: /var/log
+    readOnly: true
+  - pathPrefix: /var/run/docker.sock
+    readOnly: true
+  - pathPrefix: /home/kubernetes/bin
+    readOnly: true
+  - pathPrefix: /etc/srv/kubernetes/pki/
+    readOnly: true
+  - pathPrefix: /etc/ssl/certs
+    readOnly: true
+  - pathPrefix: /var/lib/kube-proxy/kubeconfig
+    readOnly: true
+  - pathPrefix: /var/lib/kubelet/kubeconfig
+    readOnly: true
+  - pathPrefix: /
+    readOnly: true
+  - pathPrefix: /var/lib/docker/containers
+    readOnly: true
+  - pathPrefix: /etc
+    readOnly: true
+  - pathPrefix: /var/lib/calico
+    readOnly: true
+  - pathPrefix: /run/xtables.lock
+    readOnly: true
+  - pathPrefix: /var/lib/kubelet/pods
+    readOnly: true
+  - pathPrefix: /etc/ssl/certs/
+    readOnly: true
+  - pathPrefix: /sys
+    readOnly: true

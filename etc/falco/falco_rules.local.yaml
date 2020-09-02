@@ -1,0 +1,62 @@
+# 
+# kc
+# 
+# Copyright (C) 2019 The Falco Authors.
+#
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+####################
+# Your custom rules!
+####################
+
+# Add new rules, like this one
+# - rule: The program "sudo" is run in a container
+#   desc: An event will trigger every time you run sudo in a container
+#   condition: evt.type = execve and evt.dir=< and container.id != host and proc.name = sudo
+#   output: "Sudo run in container (user=%user.name %container.info parent=%proc.pname cmdline=%proc.cmdline)"
+#   priority: ERROR
+#   tags: [users, container]
+
+# Or override/append to any rule, macro, or list from the Default Rules
+
+# - rule: detect_madvise
+#   desc: Detect any call to madvise
+#   condition: evt.type=madvise and evt.dir=<
+#   output: A madvise syscall was seen (command=%proc.cmdline evt=%evt.type)
+#   priority: INFO
+
+# - rule: detect_open
+#   desc: Detect any call to open
+#   condition: evt.type=open and evt.dir=<
+#   output: An open syscall was seen (command=%proc.cmdline evt=%evt.type file=%fd.name)
+#   priority: INFO
+
+# Detect ptrace syscall. In production this could indicate an attempt to dump process memory
+# or inject code into a running process or otherwise tamper with a running process. 
+# https://medium.com/@jain.sm/code-injection-in-running-process-using-ptrace-d3ea7191a4be
+- rule: detect_ptrace
+  desc: Detect any call to ptrace
+  condition: evt.type=ptrace and evt.dir=<
+  output: A ptrace syscall was seen (command=%proc.cmdline evt=%evt.type file=%fd.name)
+  priority: WARNING
+  tags: [container, debugging, process_memory_dump]
+
+# Detect ptrace syscall. In production this could indicate an attempt to dump process memory 
+# - rule: detect_strace
+#   desc: Detect any call to strace
+#   condition: evt.type=strace and evt.dir=<
+#   output: An strace syscall was seen (command=%proc.cmdline evt=%evt.type file=%fd.name)
+#   priority: WARNING
+#   tags: [container, debugging, process_memory_dump]

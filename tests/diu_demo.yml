@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: diuexploit
+  namespace: team-security
+spec:
+  selector:
+    matchLabels:
+      app: diuexploit
+  template:
+    metadata:
+      labels:
+        app: diuexploit
+    spec:
+      containers:
+      - name: diuexploit
+        image: gjyoung1974/diuexploit:latest
+        # image: gcr.io/pm-registry/diuexploit:latest
+        env:
+        - name: STRIPE_KEY
+          value: "sk_test_51HBJjpCjqvFIkssrjShLgJxZajEARazJ5RSAUu9PKzB74tPCriolryNDiiKH08nFzNmHQCKXRwWj5mIxvWmx79no00cMrJkv9C"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        securityContext:
+          privileged: true

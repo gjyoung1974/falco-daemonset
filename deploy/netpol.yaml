@@ -1,0 +1,55 @@
+---
+apiVersion: extensions/v1beta1
+kind: NetworkPolicy
+metadata:
+  name: falco-ds-pod-security-policy
+  namespace: team-security
+  labels:
+    k8s-app: falco
+    app: falco
+spec:
+  egress:
+  - ports:
+    - port: 80
+      protocol: TCP
+    to:
+  # TODO set these to the Ingress PKI CRLDPs that Sumologic uses
+    - ipBlock:
+        cidr: 10.3.0.0/16
+    - ipBlock:
+        cidr: 10.1.22.0/24
+    - ipBlock:
+        cidr: 10.1.23.0/24
+  podSelector:
+    matchLabels:
+      app: falco
+  policyTypes:
+  - Egress
+---
+apiVersion: extensions/v1beta1
+kind: NetworkPolicy
+metadata:
+  name: falco-ds-pod-security-policy
+  namespace: team-security
+  labels:
+    k8s-app: falco
+    app: falco
+spec:
+  egress:
+  # TODO set these to the Ingress ELBs that Sumologic uses
+  - ports:
+    - port: 443
+      protocol: TCP
+    to:
+    - ipBlock:
+        cidr: 10.3.0.0/16
+    - ipBlock:
+        cidr: 10.1.22.0/24
+    - ipBlock:
+        cidr: 10.1.23.0/24
+  podSelector:
+    matchLabels:
+      app: falco
+  policyTypes:
+  - Egress
+---

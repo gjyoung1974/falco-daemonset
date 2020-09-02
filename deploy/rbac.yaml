@@ -1,0 +1,9 @@
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: falco-ds-pod-rbac-policy
+  namespace: team-security
+rules:
+- apiGroups: [""]
+  resources: ["pods/exec"]
+  verbs: ["list"]

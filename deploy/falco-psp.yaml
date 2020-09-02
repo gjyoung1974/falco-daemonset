@@ -1,0 +1,114 @@
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: falco-ds-pod-security-policy
+  namespace: team-security
+spec:
+# TODO what caps are needed?
+  allowedCapabilities:
+  - SYS_PTRACE
+  - NET_ADMIN
+  allowedHostPaths:
+  - pathPrefix: /var/lib/kubelet/pods
+    readOnly: true
+  - pathPrefix: /var/lib/kube-proxy/kubeconfig
+    readOnly: true
+  - pathPrefix: /var/log
+    readOnly: true
+  - pathPrefix: /var/run/
+    readOnly: true
+  - pathPrefix: /mnt/disks
+    readOnly: true
+  - pathPrefix: /var/lib/docker/containers
+    readOnly: true
+  - pathPrefix: /var/lib/docker
+    readOnly: true
+  - pathPrefix: /var/run
+    readOnly: true
+  - pathPrefix: /var/run/docker.sock
+    readOnly: true
+  - pathPrefix: /var/lib/kubelet/kubeconfig
+    readOnly: true
+  - pathPrefix: /etc/srv/kubernetes/pki/
+    readOnly: true
+  - pathPrefix: /
+    readOnly: true
+  - pathPrefix: /var/lib/log-tailer
+    readOnly: true
+  - pathPrefix: /proc
+    readOnly: true
+  - pathPrefix: /sys/fs/cgroup
+    readOnly: true
+  - pathPrefix: /boot
+    readOnly: true
+  - pathPrefix: /var/lib/kubelet/pki/
+    readOnly: true
+  - pathPrefix: /run/xtables.lock
+    readOnly: true
+  - pathPrefix: /dev
+    readOnly: true
+  - pathPrefix: /var/lib/kubelet/device-plugins
+    readOnly: true
+  - pathPrefix: /dev/disk
+    readOnly: true
+  - pathPrefix: /etc
+    readOnly: true
+  - pathPrefix: /etc/ssl/certs
+    readOnly: true
+  - pathPrefix: /home/kubernetes/bin
+    readOnly: true
+  - pathPrefix: /sys
+    readOnly: true
+  - pathPrefix: /usr/share/ca-certificates
+    readOnly: true
+  - pathPrefix: /etc/ssl/certs/
+    readOnly: true
+  - pathPrefix: /usr
+    readOnly: true
+  - pathPrefix: /etc/cni/net.d
+    readOnly: true
+  - pathPrefix: /var/run/calico
+    readOnly: true
+  - pathPrefix: /var/lib/calico
+    readOnly: true
+  - pathPrefix: /lib/modules
+    readOnly: true
+# TODO what RunAs user is needed?
+  fsGroup:
+    rule: RunAsAny
+  hostIPC: true
+  hostNetwork: true
+  hostPID: true
+  # hostPorts:
+  # - max: 0
+  #   min: 0
+  # - max: 53
+  #   min: 53
+  # - max: 80
+  #   min: 80
+  # - max: 443
+  #   min: 443
+  # - max: 989
+  #   min: 989
+  # - max: 5473
+  #   min: 5473
+  # - max: 8181
+  #   min: 8181
+  # - max: 9153
+  #   min: 9153
+  # need this to attach eBPF and receive syscall messages
+  privileged: true
+  # TODO what RunAs users are needed?
+  runAsUser:
+    rule: RunAsAny
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  volumes:
+  - persistentVolumeClaim
+  - hostPath
+  - secret
+  - configMap
+  - emptyDir
+  - projected

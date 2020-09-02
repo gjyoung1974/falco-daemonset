@@ -1,0 +1,113 @@
+# apiVersion: extensions/v1beta1
+# TODO remove any un-needed mountpoints
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    k8s-app: falco
+  name: falco
+  namespace: team-security
+spec:
+  selector:
+    matchLabels:
+      k8s-app: falco
+  template:
+    metadata:
+      labels:
+        k8s-app: falco
+    spec:
+      shareProcessNamespace: true
+      containers:
+      - env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        - name: FALCO_BPF_PROBE
+          value: ""
+        - name: SYSDIG_BPF_PROBE
+          value: ""
+        - name: SUMOLOGIC_SOURCE_HOST
+          value: "endpoint6.collection.us2.sumologic.com"
+        - name: SUMOLOGIC_SOURCE_ENDPOINT
+        # Sumologic gke-e2e receiver http collector endpoint
+          value: "/receiver/v1/http/ZaVnC4dhaV1njFXfacCerMOe6hIvxj0kMo-ureXol39ZTgEZXqnj18pw-tNUOmIc19g6vSWx6-2P6MrkWxQ8t3xPKGJ_pJ0U4S-yXSfiu12catU68FGsmA=="
+        - name: LOGFILE_PATH
+          value: "/var/log/falco.log"
+        image: gjyoung1974/falcods:latest
+        command: ["sudo", "bash","-c","/startup.sh"]
+        imagePullPolicy: Always
+        name: falco
+        resources: {
+          limits: {
+          cpu: '1',
+          memory: '256M'
+            },
+          requests: {
+          memory: '128M',
+          cpu: '.5'
+            }
+        }
+        securityContext:
+          privileged: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - name: dockersocket
+          mountPath: /var/run/docker.sock
+        - name: procdir
+          mountPath: /host/proc
+          readOnly: true
+        - name: cgroups
+          mountPath: /host/sys/fs/cgroup
+          readOnly: true
+        - name: dev
+          mountPath: /host/dev
+          readOnly: true
+        - name: boot
+          mountPath: /host/boot
+          readOnly: true
+        - name: usr
+          mountPath: /host/usr
+          readOnly: true
+        - name: etc
+          mountPath: /host/etc
+          readOnly: true
+        - name: modules
+          mountPath: /host/modules
+          readOnly: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - hostPath:
+            path: /var/run/docker.sock
+          name: dockersocket
+        - hostPath:
+            path: /proc
+          name: procdir
+        - hostPath:
+            path: /sys/fs/cgroup
+          name: cgroups
+        - hostPath:
+            path: /dev
+          name: dev
+        - hostPath:
+            path: /boot
+          name: boot
+        - hostPath:
+            path: /lib/modules
+          name: modules
+        - hostPath:
+            path: /etc
+          name: etc
+        - hostPath:
+            path: /usr
+          name: usr
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
