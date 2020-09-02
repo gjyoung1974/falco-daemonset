@@ -6,7 +6,7 @@ metadata:
   labels:
     k8s-app: falco
   name: falco
-  namespace: team-security
+  namespace: some-namespace
 spec:
   selector:
     matchLabels:
@@ -31,17 +31,13 @@ spec:
         - name: SUMOLOGIC_SOURCE_HOST
           value: "endpoint6.collection.us2.sumologic.com"
         - name: SUMOLOGIC_SOURCE_ENDPOINT
-        # Sumologic gke-e2e receiver http collector endpoint
-        #  value: "/receiver/v1/http/ZaVnC4dhaV1njFXfacCerMOe6hIvxj0kMo-ureXol39ZTgEZXqnj18pw-tNUOmIc19g6vSWx6-2P6MrkWxQ8t3xPKGJ_pJ0U4S-yXSfiu12catU68FGsmA=="
-        # Sumologic gke-prod receiver http collector endpoint  
-          value: "/receiver/v1/http/ZaVnC4dhaV3EGyz2h6WhL5n_alaCLIv6QRcJqtLZQJqMI-TpYxtJfvzUS00rzpCdh_aFmXXMVr8CywNDKDDZWtS5jvmAVX34kI9JEDCqXT74q2IryAZhug=="
+          value: "/receiver/v1/http/<your key>"
         - name: LOGFILE_PATH
           value: "/var/log/falco.log"
         image: gcr.io/pm-registry/falcods:latest
         command: ["sudo","-E","bash","-c","/startup.sh"]
         imagePullPolicy: Always
         name: falco
-        # https://github.com/acme/pi-k8s/blob/master/doc/REQUESTS_AND_LIMITS.md
         resources: {
           limits: {
           cpu: '.9',
