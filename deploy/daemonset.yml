@@ -38,7 +38,6 @@ spec:
         command: ["sudo","-E","bash","-c","/startup.sh"]
         imagePullPolicy: Always
         name: falco
-        # https://github.com/acme/pi-k8s/blob/master/doc/REQUESTS_AND_LIMITS.md
         resources: {
           limits: {
           cpu: '.9',
